@@ -1,0 +1,40 @@
+<style>
+  .tabcontent {
+    display: none;
+  }
+</style>
+
+<!-- Tab links -->
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'Hurricanes')">Hurricanes</button>
+  <button class="tablinks" onclick="openCity(event, 'Floods')">Floods</button>
+  <button class="tablinks" onclick="openCity(event, 'Red Tide')">Red Tide</button>
+</div>
+
+<!-- Tab content -->
+<div id="Hurricanes" class="tabcontent">
+  <h3>Hurricanes</h3>
+  <p>Hurricanes information and safety tips.</p>
+</div>
+
+<div id="Floods" class="tabcontent">
+  <h3>Floods</h3>
+  <p>Flood warnings and safety information.</p>
+</div>
+
+<div id="Red Tide" class="tabcontent">
+  <h3>Red Tide</h3>
+  <p>Red tide conditions and beach safety.</p>
+</div>
+
+<script>
+  function openCity(evt, cityName) {
+    let tabs = document.getElementsByClassName("tabcontent");
+
+    for (let tab of tabs) {
+      tab.style.display = "none";
+    }
+
+    document.getElementById(cityName).style.display = "block";
+  }
+</script>
