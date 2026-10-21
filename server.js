@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cors = require("cors");
 
@@ -27,6 +26,8 @@ app.get("/hurricanes", async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log("Hurricane server running at http://localhost:3000");
+const port = process.env.PORT || 3000;
+
+app.listen(port, "0.0.0.0", () => {
+    console.log("Hurricane server is running on port " + port);
 });
