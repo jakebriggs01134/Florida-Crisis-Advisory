@@ -43,4 +43,191 @@
 
 	document.getElementById(cityName).style.display = "block";
 	}
+
+	// Fetch Data Script:
+	async function getFloridaData() {
+
+		// RED TIDE
+		const redTideResponse = await fetch(
+			"https://gis.myfwc.com/mapping/rest/services/Open_Data/Recent_Harmful_Algal_Bloom__HAB__Events_2024_present/MapServer/7/query?where=1%3D1&outFields=*&returnGeometry=false&f=json"
+		);
+
+		const redTideData = await redTideResponse.json();
+
+		const redTideSamples = (redTideData.features || []).map(sample => {
+			const info = sample.attributes;
+
+			const sampleDate = info.SAMPLE_DATE;
+			const location = info.LOCATION;
+			const latitude = info.LATITUDE;
+			const longitude = info.LONGITUDE;
+			const species = info.NAME;
+			const cellCount = info.COUNT_;
+
+			return {
+				sampleDate,
+				location,
+				latitude,
+				longitude,
+				species,
+				cellCount
+			};
+			const readableDateRedTide = new Date(sample.sampleDate).toLocaleDateString("en-US", {
+				month: "long",
+				day: "numeric",
+				year: "numeric"
+			});
+			const locationRedTide = sample.location.split(";")[0];
+			const cellCountRedTide = sample.cellCount;
+		});
+
+		if (redTideSamples.every(sample => sample.cellCount === 0)) {
+			console.log("There is no current red tide.");
+			const redTideCurrentLocations = "No current red tide";
+		} else {
+			const redTideCurrentLocations = redTideSamples
+				.filter(sample => sample.cellCount > 0)
+				.map(sample => `${sample.location.split(";")[0]}: ${sample.cellCount} cells`);
+
+			console.log(redTideCurrentLocations);
+		}
+
+		
+
+		// HURRICANES
+			const hurricaneResponse = await fetch(
+				"https://www.nhc.noaa.gov/CurrentStorms.json"
+			);
+
+			if (!hurricaneResponse.ok) {
+				throw new Error("Could not get hurricane data");
+			}
+
+			const hurricaneData = await hurricaneResponse.json();
+
+			const hurricanes = (hurricaneData.activeStorms || []).map(storm => {
+
+				const name = storm.name;
+				const stormType = storm.classification;
+				const windSpeed = storm.intensity;
+				const pressure = storm.pressure;
+				const latitude = storm.latitude;
+				const longitude = storm.longitude;
+				const movement = storm.movement;
+				const lastUpdated = storm.lastUpdate;
+
+				return {
+					name,
+					stormType,
+					windSpeed,
+					pressure,
+					latitude,
+					longitude,
+					movement,
+					lastUpdated
+				};
+			});
+
+			if (hurricanes.length === 0) {
+				console.log("No active storms are currently listed by the NHC.");
+				const hurricaneStatus = "No active storms are currently listed by the NHC.";
+			} else {
+				console.log("Hurricanes:", hurricanes);
+			}
+
+
+		// FLOOD WARNINGS
+		const floodResponse = await fetch(
+			"https://api.weather.gov/alerts/active?area=FL",
+			{
+				headers: {
+					"Accept": "application/geo+json",
+					"User-Agent": "FloridaWeatherTracker/1.0"
+				}
+			}
+		);
+
+		const floodData = await floodResponse.json();
+
+		const floodWarnings = (floodData.features || [])
+			.filter(alert =>
+				alert.properties?.event?.toLowerCase().includes("flood")
+			)
+			.map(alert => {
+				const info = alert.properties;
+
+				const event = info.event;
+				const severity = info.severity;
+				const certainty = info.certainty;
+				const urgency = info.urgency;
+				const startTime = info.onset || info.effective;
+				const endTime = info.ends || info.expires;
+				const readableStartTime = startTime
+					? new Date(startTime).toLocaleString("en-US")
+					: "Unknown";
+
+				const readableEndTime = endTime
+					? new Date(endTime).toLocaleString("en-US")
+					: "Unknown";
+				const affectedAreas = info.areaDesc;
+				const headline = info.headline;
+				const description = info.description;
+				const instructions = info.instruction;
+
+				return {
+					event,
+					severity,
+					certainty,
+					urgency,
+					startTime,
+					endTime,
+					readableStartTime,
+					readableEndTime,
+					affectedAreas,
+					headline,
+					description,
+					instructions
+				};
+			});
+
+
+		// DISPLAY WHAT IS IN THE VARIABLES IN CONSOLE
+		console.log("RED TIDE:", redTideSamples);
+		console.log("HURRICANES:", hurricanes);
+		console.log("FLOOD WARNINGS:", floodWarnings);
+	}
+
+
+	getFloridaData().catch(error => {
+		console.error("Error getting Florida data:", error);
+	});
+
+	/* VERY IMPORTANT FOR D'ANGELO/BROOKS/DARIO: USE THE FOLLOWING VARIALBES TO DISPLAY THE DATA IN THE HTML
+	*   (Look in the console to see what each variable actually contains)
+	*   (some of the variables you might have to change into readable formats, specifically the description and instructions for flood warnings)
+	*   (also some might not be useful)
+	*	(some of the things that I got from the API might not be useful so I didn't make them into variables, but you can do that if you want to)
+	*   --FOR RED TIDE:
+	*   redTideCurrentLocations
+	*   readableDateRedTide (this is when the data of the red tide was last updated/collected)
+	*   locationRedTide (you won't really need this one, just use redTideCurrentLocations because this will have 2000+ locations)
+	*   cellCountRedTide
+	*   --FOR HURRICANES:
+	*   hurricaneStatus
+	*   stormType
+	*   windSpeed
+	*   pressure
+	*   movement
+	*   lastUpdated
+	*   --FOR FLOOD WARNINGS:
+	*   severity
+	*   certainty
+	*   urgency
+	*   readableStartTime
+	*   readableEndTime
+	*   affectedAreas
+	*   headline
+	*   description
+	*   instructions
+	*/
 </script>
