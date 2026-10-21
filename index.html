@@ -96,11 +96,11 @@
 
 		// HURRICANES
 			const hurricaneResponse = await fetch(
-				"https://www.nhc.noaa.gov/CurrentStorms.json"
+				"http://localhost:3000/hurricanes"
 			);
 
 			if (!hurricaneResponse.ok) {
-				throw new Error("Could not get hurricane data");
+				throw new Error("Could not get hurricane data" + hurricaneResponse.status);
 			}
 
 			const hurricaneData = await hurricaneResponse.json();
