@@ -1,233 +1,1129 @@
-<style>
-	.tabcontent {
-	display: none;
-	}
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Florida Crisis Advisory</title>
 
-<!-- Tab links -->
- <head>
-	<meta charset="utf-8">
-	<title>Florida Crisis Alert</title>
-	<div class="tab">
-		<button class="tablinks" onclick="openCity(event, 'Hurricanes')">Hurricanes</button>
-		<button class="tablinks" onclick="openCity(event, 'Floods')">Floods</button>
-		<button class="tablinks" onclick="openCity(event, 'Red Tide')">Red Tide</button>
-	</div>
- </head>
+    <style>
+        :root {
+            --ocean: #075985;
+            --blue: #0284c7;
+            --turquoise: #14b8a6;
+            --light-blue: #eaf7ff;
+            --coral: #f97360;
+            --navy: #102a43;
+            --muted: #587184;
+            --border: #cce7f5;
+        }
 
-<!-- Tab content -->
- <body>
-	<div id="Hurricanes" class="tabcontent">
-		<h3>Hurricanes</h3>
-		<p>Hurricanes information and safety tips.</p>
-	</div>
+        * {
+            box-sizing: border-box;
+        }
 
-	<div id="Floods" class="tabcontent">
-		<h3>Floods</h3>
-		<p>Flood warnings and safety information.</p>
-	</div>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(180deg, #dff6ff, #f6fbff);
+            color: var(--navy);
+            line-height: 1.6;
+        }
 
-	<div id="Red Tide" class="tabcontent">
-		<h3>Red Tide</h3>
-		<p>Red tide conditions and beach safety.</p>
-	</div>
+        header {
+            padding: 35px 20px;
+            color: white;
+            text-align: center;
+            background: linear-gradient(125deg, #075985, #0284c7, #14b8a6);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: clamp(2rem, 5vw, 3.3rem);
+            line-height: 1.2;
+        }
+
+        header p {
+            margin: 12px 0 0;
+            font-size: 1.05rem;
+        }
+
+        .header-icon {
+            font-size: 2rem;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 24px;
+        }
+
+        .intro {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .intro h2 {
+            margin: 0;
+            font-size: 1.65rem;
+        }
+
+        .intro p {
+            margin: 4px 0 0;
+            color: var(--muted);
+        }
+
+        .text-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .text-control input {
+            width: 110px;
+            accent-color: var(--blue);
+        }
+
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            padding: 16px 10px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            color: var(--ocean);
+            font-size: 1.05rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+            border-color: var(--blue);
+        }
+
+        .tab.active {
+            background: var(--ocean);
+            color: white;
+            border-color: var(--ocean);
+        }
+
+        .tab:focus-visible,
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid var(--coral);
+            outline-offset: 3px;
+        }
+
+        .panel {
+            display: none;
+            animation: appear 0.25s ease;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+            gap: 22px;
+            align-items: start;
+        }
+
+        .card {
+            min-width: 0;
+            padding: 23px;
+            margin-bottom: 20px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: 0 5px 18px #0759850c;
+        }
+
+        .card h2 {
+            margin: 0 0 14px;
+            font-size: 1.45rem;
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            font-size: 1.08rem;
+        }
+
+        .card p {
+            margin-top: 6px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .stat {
+            min-width: 0;
+            padding: 14px;
+            background: var(--light-blue);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .stat-label {
+            display: block;
+            color: var(--muted);
+            font-size: 0.87rem;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            display: block;
+            margin-top: 5px;
+            overflow-wrap: anywhere;
+            font-size: 1.12rem;
+            font-weight: bold;
+        }
+
+        .alert {
+            padding: 15px 17px;
+            margin-bottom: 18px;
+            border-left: 5px solid var(--coral);
+            border-radius: 9px;
+            background: #fff0ec;
+        }
+
+        .alert p {
+            margin-bottom: 0;
+        }
+
+        .location-list {
+            padding-left: 22px;
+            overflow-wrap: anywhere;
+        }
+
+        .location-list li {
+            margin-bottom: 8px;
+        }
+
+        .data-scroll-box {
+            max-height: 700px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 12px;
+            margin-top: 12px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #f4fbff;
+            scrollbar-width: thin;
+            scrollbar-color: var(--blue) #e2edf4;
+        }
+
+        .data-item {
+            padding: 14px;
+            margin-bottom: 12px;
+            background: white;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--blue);
+            border-radius: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .data-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .data-item h3 {
+            margin: 0 0 8px;
+            color: var(--ocean);
+        }
+
+        .data-item p {
+            margin: 5px 0;
+        }
+
+        .instruction-list {
+            padding-left: 24px;
+        }
+
+        .instruction-list li {
+            margin-bottom: 10px;
+        }
+
+        .checklist {
+            display: grid;
+            gap: 12px;
+        }
+
+        .checklist label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .checklist input {
+            margin-top: 6px;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            accent-color: var(--turquoise);
+        }
+
+        .progress-track {
+            height: 9px;
+            margin: 12px 0;
+            overflow: hidden;
+            background: #e2edf4;
+            border-radius: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            background: var(--turquoise);
+            transition: width 0.2s;
+        }
+
+        .progress-text {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .static-warning {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            background: #fff6e5;
+            border: 1px solid #f2d39a;
+        }
+
+        .static-warning strong {
+            color: #8a4b08;
+        }
+
+        footer {
+            padding: 25px 20px;
+            color: white;
+            text-align: center;
+            background: var(--ocean);
+        }
+
+        footer p {
+            margin: 4px 0;
+        }
+
+        footer a {
+            color: white;
+        }
+
+        @media (max-width: 800px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .page-container {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tabs {
+                gap: 5px;
+            }
+
+            .tab {
+                padding: 12px 4px;
+                font-size: 0.88rem;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 27px 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-icon" aria-hidden="true">🌴 🌊 ☀️</div>
+        <h1>Florida Crisis Advisory</h1>
+        <p>Stay informed. Stay prepared. Stay Florida strong.</p>
+    </header>
+
+    <main class="page-container">
+        <div class="intro">
+            <div>
+                <h2>Your Florida Safety Dashboard</h2>
+                <p>Explore current conditions and learn how to stay safe.</p>
+            </div>
+
+            <label class="text-control">
+                Text size
+                <input
+                    id="textSize"
+                    type="range"
+                    min="14"
+                    max="21"
+                    value="16"
+                    aria-label="Adjust text size"
+                >
+            </label>
+        </div>
+
+        <!-- Buttons switch between the three sections. -->
+        <nav class="tabs" aria-label="Crisis categories" role="tablist">
+            <button class="tab active" data-tab="redTide"
+                aria-selected="true" role="tab">
+                🌊 Red Tide
+            </button>
+
+            <button class="tab" data-tab="hurricanes"
+                aria-selected="false" role="tab">
+                🌀 Hurricanes
+            </button>
+
+            <button class="tab" data-tab="floods"
+                aria-selected="false" role="tab">
+                🌧️ Floods
+            </button>
+        </nav>
+
+        <!-- RED TIDE TAB -->
+        <section class="panel active" id="redTide" role="tabpanel">
+            <div class="layout">
+                <div>
+                    <div class="card">
+                        <h2>🌊 Red Tide Conditions</h2>
+
+                        <div class="stat-grid">
+                            <div class="stat">
+                                <span class="stat-label">Latest Sample Date</span>
+                                <span class="stat-value" id="redDate">Loading...</span>
+                            </div>
+
+                            <div class="stat">
+                                <span class="stat-label">Combined Cell Count</span>
+                                <span class="stat-value" id="redCount">Loading...</span>
+                            </div>
+                        </div>
+
+                        <p>
+                            The combined cell count adds the reported counts
+                            from all returned positive samples. Samples may
+                            represent different locations and dates.
+                        </p>
+
+                        <div style="margin-top: 18px;">
+                            <h3>📍 Reported Locations</h3>
+                            <p>Locations with positive cell counts in the returned data.</p>
+
+                            <ul class="location-list" id="redLocations">
+                                <li>Loading locations...</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>What Is Red Tide?</h2>
+
+                        <p>
+                            Red tide is a harmful algal bloom that can affect
+                            marine life, water quality, and human health.
+                            In Florida, blooms of Karenia brevis can produce
+                            toxins that harm fish and irritate the eyes,
+                            nose, and throat.
+                        </p>
+
+                        <h3>What You Should Do</h3>
+
+                        <ul class="instruction-list">
+                            <li>Avoid swimming where dead fish or signs of a bloom are present.</li>
+                            <li>Stay away from affected beaches if you experience coughing, throat irritation, or breathing discomfort.</li>
+                            <li>Keep pets away from affected water and dead marine animals.</li>
+                            <li>Follow local shellfish harvesting and seafood advisories.</li>
+                            <li>People with asthma or other respiratory conditions should take extra precautions near affected beaches.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <h2>🛡️ Beach Safety Checklist</h2>
+                        <p>Check each item as you prepare for a beach visit.</p>
+
+                        <div class="checklist">
+                            <label><input type="checkbox" class="safety-check"><span>Check official beach and water advisories.</span></label>
+                            <label><input type="checkbox" class="safety-check"><span>Look for dead fish or unusual water conditions.</span></label>
+                            <label><input type="checkbox" class="safety-check"><span>Keep pets away from suspicious water.</span></label>
+                            <label><input type="checkbox" class="safety-check"><span>Leave the area if irritation or breathing symptoms occur.</span></label>
+                        </div>
+
+                        <div class="progress-track">
+                            <div class="progress-fill"></div>
+                        </div>
+
+                        <p class="progress-text" aria-live="polite">0 of 4 safety steps completed</p>
+                    </div>
+
+                    <div class="card">
+                        <h2>Know Before You Go</h2>
+
+                        <p>
+                            A single sample or location does not describe
+                            every beach. Conditions can change, and a low
+                            cell count does not guarantee that all nearby
+                            water is safe.
+                        </p>
+
+                        <p>
+                            Consult official Florida health and environmental
+                            advisories before swimming, fishing, or harvesting
+                            shellfish.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HURRICANE TAB -->
+        <section class="panel" id="hurricanes" role="tabpanel">
+            <div class="layout">
+                <div>
+                    <div class="card">
+                        <h2>🌀 Current Hurricanes and Storms</h2>
+
+                        <p>
+                            This list shows every active storm returned by
+                            your hurricane data source.
+                        </p>
+
+                        <div id="hurricaneList" class="data-scroll-box">
+                            Loading hurricane data...
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <h2>🏠 Hurricane Preparedness</h2>
+
+                        <p>
+                            Prepare before a storm threatens your area.
+                            Follow evacuation orders from local authorities.
+                        </p>
+
+                        <div class="checklist">
+                            <label><input type="checkbox" class="safety-check"><span>Prepare water, nonperishable food, and essential supplies.</span></label>
+                            <label><input type="checkbox" class="safety-check"><span>Charge phones and backup batteries.</span></label>
+                            <label><input type="checkbox" class="safety-check"><span>Secure outdoor objects and protect windows as appropriate.</span></label>
+                            <label><input type="checkbox" class="safety-check"><span>Know your evacuation zone and evacuation routes.</span></label>
+                            <label><input type="checkbox" class="safety-check"><span>Keep medications, documents, and emergency contacts accessible.</span></label>
+                            <label><input type="checkbox" class="safety-check"><span>Monitor official weather alerts and local emergency instructions.</span></label>
+                        </div>
+
+                        <div class="progress-track">
+                            <div class="progress-fill"></div>
+                        </div>
+
+                        <p class="progress-text" aria-live="polite">0 of 6 safety steps completed</p>
+                    </div>
+
+                    <div class="card">
+                        <h2>Understand the Risk</h2>
+
+                        <ul class="instruction-list">
+                            <li><strong>Storm surge:</strong> Ocean water can move inland and flood coastal communities.</li>
+                            <li><strong>Strong winds:</strong> Flying debris and falling trees can cause serious injuries.</li>
+                            <li><strong>Heavy rainfall:</strong> Flooding can occur far from the coast.</li>
+                            <li><strong>Tornadoes:</strong> Hurricanes can produce tornadoes, including away from the storm's center.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FLOOD TAB -->
+        <section class="panel" id="floods" role="tabpanel">
+            <div class="layout">
+                <div>
+                    <div class="card">
+                        <h2>🌧️ Current Florida Flood Alerts</h2>
+
+                        <p>
+                            Scroll through active flood-related alerts returned
+                            by the National Weather Service.
+                        </p>
+
+                        <div id="floodList" class="data-scroll-box">
+                            Loading flood alerts...
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <h2>🚨 Flood Safety</h2>
+
+                        <div class="alert">
+                            <strong>Turn Around, Don't Drown</strong>
+                            <p>
+                                Never walk, swim, or drive through floodwater.
+                                Water can hide road damage and move vehicles
+                                or people unexpectedly.
+                            </p>
+                        </div>
+
+                        <div class="checklist">
+                            <label><input type="checkbox" class="safety-check"><span>Move to higher ground if flooding threatens your area.</span></label>
+                            <label><input type="checkbox" class="safety-check"><span>Follow evacuation instructions from local authorities.</span></label>
+                            <label><input type="checkbox" class="safety-check"><span>Avoid flooded roads, bridges, and underpasses.</span></label>
+                            <label><input type="checkbox" class="safety-check"><span>Keep emergency supplies and a charged phone ready.</span></label>
+                            <label><input type="checkbox" class="safety-check"><span>Avoid electrical equipment and downed power lines in flooded areas.</span></label>
+                        </div>
+
+                        <div class="progress-track">
+                            <div class="progress-fill"></div>
+                        </div>
+
+                        <p class="progress-text" aria-live="polite">0 of 5 safety steps completed</p>
+                    </div>
+
+                    <div class="card">
+                        <h2>Types of Flooding</h2>
+
+                        <h3>Flash Flooding</h3>
+                        <p>Rapid flooding can develop with little warning after intense rainfall.</p>
+
+                        <h3>Coastal Flooding</h3>
+                        <p>Storm surge, high tides, and coastal weather can push water into low-lying areas.</p>
+
+                        <h3>River and Inland Flooding</h3>
+                        <p>Rivers, canals, and drainage systems can overflow after prolonged or heavy rainfall.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="static-warning">
+            <strong>Important safety notice</strong>
+
+            <p>
+                This website is an informational tool, not an official
+                emergency alert system. Data may be delayed or incomplete.
+                Always follow instructions from emergency officials.
+                Call 911 for an immediate life-threatening emergency.
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p><strong>Florida Crisis Advisory</strong></p>
+        <p>Stay informed. Stay prepared. Protect your community.</p>
+
+        <p>
+            Official resources:
+            <a href="https://www.weather.gov/" target="_blank" rel="noopener noreferrer">National Weather Service</a>
+            ·
+            <a href="https://www.floridadisaster.org/" target="_blank" rel="noopener noreferrer">Florida Disaster</a>
+            ·
+            <a href="https://myfwc.com/research/redtide/" target="_blank" rel="noopener noreferrer">Florida Red Tide Information</a>
+        </p>
+    </footer>
+
+    <script>
+        // Keep the selected tab visible and hide the other two.
+        document.querySelectorAll(".tab").forEach(function(tab) {
+            tab.addEventListener("click", function() {
+                document.querySelectorAll(".tab").forEach(function(button) {
+                    button.classList.remove("active");
+                    button.setAttribute("aria-selected", "false");
+                });
+
+                document.querySelectorAll(".panel").forEach(function(panel) {
+                    panel.classList.remove("active");
+                });
+
+                tab.classList.add("active");
+                tab.setAttribute("aria-selected", "true");
+
+                document.getElementById(tab.dataset.tab).classList.add("active");
+            });
+        });
+
+        // Change the page font size without changing the layout.
+        document.getElementById("textSize").addEventListener("input", function() {
+            document.body.style.fontSize = this.value + "px";
+        });
+
+        // Each card tracks only its own checklist.
+        // This keeps one checklist from changing another card's progress.
+        document.querySelectorAll(".card").forEach(function(card) {
+            const checks = card.querySelectorAll(".safety-check");
+
+            if (checks.length === 0) {
+                return;
+            }
+
+            const progress = card.querySelector(".progress-fill");
+            const progressText = card.querySelector(".progress-text");
+
+            function updateProgress() {
+                const completed = card.querySelectorAll(
+                    ".safety-check:checked"
+                ).length;
+
+                progress.style.width =
+                    (completed / checks.length * 100) + "%";
+
+                progressText.textContent =
+                    completed + " of " + checks.length +
+                    " safety steps completed";
+            }
+
+            checks.forEach(function(check) {
+                check.addEventListener("change", updateProgress);
+            });
+
+            updateProgress();
+        });
+
+        // RED TIDE
+        const RED_TIDE_URL =
+            "https://gis.myfwc.com/mapping/rest/services/Open_Data/Recent_Harmful_Algal_Bloom__HAB__Events_2024_present/MapServer/7/query?where=1%3D1&outFields=*&returnGeometry=false&orderByFields=SAMPLE_DATE%20DESC&resultRecordCount=2000&f=json";
+
+        async function getRedTideData() {
+            const dateDisplay = document.getElementById("redDate");
+            const countDisplay = document.getElementById("redCount");
+            const locationList = document.getElementById("redLocations");
+
+            try {
+                console.log("[RED TIDE] Requesting FWC data...");
+
+                const response = await fetch(RED_TIDE_URL);
+
+                console.log("[RED TIDE] HTTP status:", response.status);
+
+                if (!response.ok) {
+                    throw new Error("Could not get red tide data.");
+                }
+
+                const data = await response.json();
+
+                console.log("[RED TIDE] Full API response:", data);
+
+                if (data.error) {
+                    throw new Error(JSON.stringify(data.error));
+                }
+
+                const allSamples = (data.features || []).map(function(feature) {
+                    return feature.attributes || {};
+                });
+
+                console.log("[RED TIDE] Total records:", allSamples.length);
+
+                // Ignore other algae so the count only includes Karenia brevis.
+                const samples = allSamples.filter(function(sample) {
+                    return String(sample.NAME || "").trim().toLowerCase()
+                        === "karenia brevis";
+                });
+
+                // Sort newest first so the displayed date is the latest sample.
+                samples.sort(function(a, b) {
+                    return Number(b.SAMPLE_DATE || 0) -
+                        Number(a.SAMPLE_DATE || 0);
+                });
+
+                // Zero and negative counts are excluded from the positive list.
+                const positiveSamples = samples.filter(function(sample) {
+                    const count = Number(sample.COUNT_);
+
+                    return sample.COUNT_ !== null &&
+                        sample.COUNT_ !== undefined &&
+                        sample.COUNT_ !== "" &&
+                        Number.isFinite(count) &&
+                        count > 0;
+                });
+
+                console.log("[RED TIDE] Karenia brevis samples:", samples);
+                console.log("[RED TIDE] Positive samples:", positiveSamples);
+
+                if (samples.length > 0) {
+                    const timestamp = Number(samples[0].SAMPLE_DATE);
+
+                    dateDisplay.textContent =
+                        Number.isFinite(timestamp) && timestamp > 0
+                            ? new Date(timestamp).toLocaleDateString("en-US", {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric"
+                            })
+                            : "Date unavailable";
+                } else {
+                    dateDisplay.textContent = "No sample data available";
+                }
+
+                // Add only positive counts to avoid reporting zero-count samples.
+                const totalCount = positiveSamples.reduce(function(total, sample) {
+                    return total + Number(sample.COUNT_);
+                }, 0);
+
+                countDisplay.textContent = totalCount.toLocaleString("en-US");
+
+                console.log("[RED TIDE] Combined positive cell count:", totalCount);
+
+                locationList.replaceChildren();
+
+                if (positiveSamples.length === 0) {
+                    const item = document.createElement("li");
+                    item.textContent =
+                        "No positive cell counts in the returned samples.";
+                    locationList.appendChild(item);
+                } else {
+                    positiveSamples.forEach(function(sample) {
+                        const item = document.createElement("li");
+
+                        // Remove extra distance notes so location names are easier to read.
+                        const location = String(
+                            sample.LOCATION || "Unknown location"
+                        ).split(";")[0].trim();
+
+                        const count = Number(sample.COUNT_);
+                        const timestamp = Number(sample.SAMPLE_DATE);
+
+                        const sampleDate =
+                            Number.isFinite(timestamp) && timestamp > 0
+                                ? new Date(timestamp).toLocaleDateString("en-US")
+                                : "Date unavailable";
+
+                        item.textContent =
+                            location + ": " +
+                            count.toLocaleString("en-US") +
+                            " cells (sampled " + sampleDate + ")";
+
+                        locationList.appendChild(item);
+                    });
+                }
+
+                console.log(
+                    "[RED TIDE] Locations displayed:",
+                    positiveSamples.length
+                );
+
+            } catch (error) {
+                console.error("[RED TIDE] Data error:", error);
+
+                dateDisplay.textContent = "Unable to load data";
+                countDisplay.textContent = "Unavailable";
+                locationList.replaceChildren();
+
+                const item = document.createElement("li");
+                item.textContent =
+                    "Red tide data could not be loaded. Check the console.";
+                locationList.appendChild(item);
+            }
+        }
+
+        // HURRICANES
+        const HURRICANE_URL =
+            "https://florida-crisis-advisory.onrender.com/hurricanes";
+
+        async function getHurricaneData() {
+            const list = document.getElementById("hurricaneList");
+
+            try {
+                console.log("[HURRICANES] Requesting storm data...");
+
+                const response = await fetch(HURRICANE_URL);
+
+                console.log("[HURRICANES] HTTP status:", response.status);
+
+                if (!response.ok) {
+                    throw new Error("Could not get hurricane data.");
+                }
+
+                const data = await response.json();
+
+                console.log("[HURRICANES] Full API response:", data);
+
+                const storms = Array.isArray(data.activeStorms)
+                    ? data.activeStorms
+                    : [];
+
+                console.log("[HURRICANES] Active storms:", storms.length);
+                console.log("[HURRICANES] All returned storms:", storms);
+
+                list.replaceChildren();
+
+                if (storms.length === 0) {
+                    const message = document.createElement("p");
+                    message.textContent =
+                        "No active storms reported by the data source.";
+                    list.appendChild(message);
+                    return;
+                }
+
+                // Build a separate card for every storm, not just the first one.
+                storms.forEach(function(storm) {
+                    const item = document.createElement("div");
+                    item.className = "data-item";
+
+                    const title = document.createElement("h3");
+                    title.textContent = storm.name || "Unnamed storm";
+                    item.appendChild(title);
+
+                    // Add only fields supplied by the server.
+                    const details = [
+                        ["Classification", storm.classification],
+                        ["Wind Speed", storm.intensity],
+                        ["Pressure", storm.pressure],
+                        ["Movement", storm.movement],
+                        ["Last Updated", storm.lastUpdate]
+                    ];
+
+                    details.forEach(function(detail) {
+                        if (
+                            detail[1] === null ||
+                            detail[1] === undefined ||
+                            detail[1] === ""
+                        ) {
+                            return;
+                        }
+
+                        const paragraph = document.createElement("p");
+                        const label = document.createElement("strong");
+
+                        label.textContent = detail[0] + ": ";
+                        paragraph.appendChild(label);
+                        paragraph.appendChild(
+                            document.createTextNode(String(detail[1]))
+                        );
+
+                        item.appendChild(paragraph);
+                    });
+
+                    // Show coordinates only when both values are valid.
+                    const lat = Number(storm.latitude);
+                    const lon = Number(storm.longitude);
+
+                    if (
+                        storm.latitude !== null &&
+                        storm.latitude !== undefined &&
+                        storm.latitude !== "" &&
+                        storm.longitude !== null &&
+                        storm.longitude !== undefined &&
+                        storm.longitude !== "" &&
+                        Number.isFinite(lat) &&
+                        Number.isFinite(lon) &&
+                        lat >= -90 && lat <= 90 &&
+                        lon >= -180 && lon <= 180
+                    ) {
+                        const coordinates = document.createElement("p");
+                        coordinates.textContent =
+                            "Coordinates: " + lat + ", " + lon;
+                        item.appendChild(coordinates);
+                    }
+
+                    list.appendChild(item);
+                });
+
+                console.log("[HURRICANES] Storms displayed:", storms.length);
+
+            } catch (error) {
+                console.error("[HURRICANES] Data error:", error);
+
+                list.replaceChildren();
+
+                const message = document.createElement("p");
+                message.textContent =
+                    "Unable to load hurricane data. Check the console.";
+                list.appendChild(message);
+            }
+        }
+
+        // FLOOD ALERTS
+        const FLOOD_URL =
+            "https://api.weather.gov/alerts/active?area=FL";
+
+        async function getFloodData() {
+            const list = document.getElementById("floodList");
+
+            try {
+                console.log("[FLOODS] Requesting Florida weather alerts...");
+
+                const response = await fetch(FLOOD_URL, {
+                    headers: {
+                        "Accept": "application/geo+json"
+                    }
+                });
+
+                console.log("[FLOODS] HTTP status:", response.status);
+
+                if (!response.ok) {
+                    throw new Error("Could not get flood warning data.");
+                }
+
+                const data = await response.json();
+                const allAlerts = data.features || [];
+
+                console.log("[FLOODS] All Florida alerts:", allAlerts);
+
+                // Keep flood alerts but leave unrelated weather alerts out.
+                const floodAlerts = allAlerts.filter(function(alert) {
+                    const event = alert.properties?.event || "";
+                    return event.toLowerCase().includes("flood");
+                });
+
+                console.log("[FLOODS] Matching flood alerts:", floodAlerts);
+
+                list.replaceChildren();
+
+                if (floodAlerts.length === 0) {
+                    const message = document.createElement("p");
+                    message.textContent =
+                        "No active flood-related alerts found in the returned data.";
+                    list.appendChild(message);
+                    return;
+                }
+
+                // Each matching alert gets its own card so users can scroll through all of them.
+                floodAlerts.forEach(function(alert) {
+                    const info = alert.properties || {};
+                    const item = document.createElement("div");
+                    item.className = "data-item";
+
+                    const title = document.createElement("h3");
+                    title.textContent =
+                        info.headline || info.event || "Flood alert";
+                    item.appendChild(title);
+
+                    const details = [
+                        ["Event", info.event],
+                        ["Severity", info.severity],
+                        ["Certainty", info.certainty],
+                        ["Urgency", info.urgency],
+                        ["Affected Areas", info.areaDesc]
+                    ];
+
+                    details.forEach(function(detail) {
+                        if (
+                            detail[1] === null ||
+                            detail[1] === undefined ||
+                            detail[1] === ""
+                        ) {
+                            return;
+                        }
+
+                        const paragraph = document.createElement("p");
+                        const label = document.createElement("strong");
+
+                        label.textContent = detail[0] + ": ";
+                        paragraph.appendChild(label);
+                        paragraph.appendChild(
+                            document.createTextNode(String(detail[1]))
+                        );
+
+                        item.appendChild(paragraph);
+                    });
+
+                    // Convert alert times into dates people can read.
+                    const start = info.onset || info.effective;
+                    const end = info.ends || info.expires;
+
+                    if (start) {
+                        const paragraph = document.createElement("p");
+                        paragraph.textContent =
+                            "Starts: " + new Date(start).toLocaleString("en-US");
+                        item.appendChild(paragraph);
+                    }
+
+                    if (end) {
+                        const paragraph = document.createElement("p");
+                        paragraph.textContent =
+                            "Ends: " + new Date(end).toLocaleString("en-US");
+                        item.appendChild(paragraph);
+                    }
+
+                    const instructions = info.instruction || info.description;
+
+                    if (instructions) {
+                        const paragraph = document.createElement("p");
+                        const label = document.createElement("strong");
+
+                        label.textContent = "Instructions: ";
+                        paragraph.appendChild(label);
+                        paragraph.appendChild(
+                            document.createTextNode(
+                                String(instructions).replace(/\s+/g, " ")
+                            )
+                        );
+
+                        item.appendChild(paragraph);
+                    }
+
+                    list.appendChild(item);
+                });
+
+                console.log("[FLOODS] Alerts displayed:", floodAlerts.length);
+
+            } catch (error) {
+                console.error("[FLOODS] Data error:", error);
+
+                list.replaceChildren();
+
+                const message = document.createElement("p");
+                message.textContent =
+                    "Unable to load flood alerts. Check the console.";
+                list.appendChild(message);
+            }
+        }
+
+        // Load all three sources independently so one failure does not stop the others.
+        async function getFloridaData() {
+            console.log("[FLORIDA ADVISORY] Starting data requests...");
+
+            await Promise.allSettled([
+                getRedTideData(),
+                getHurricaneData(),
+                getFloodData()
+            ]);
+
+            console.log("[FLORIDA ADVISORY] Finished loading data.");
+        }
+
+        getFloridaData();
+    </script>
 </body>
-
-<script>
-	function openCity(evt, cityName) {
-		let tabs = document.getElementsByClassName("tabcontent");
-
-		for (let tab of tabs) {
-		tab.style.display = "none";
-		}
-
-	document.getElementById(cityName).style.display = "block";
-	}
-
-	// Fetch Data Script:
-	async function getFloridaData() {
-
-		// RED TIDE
-		const redTideResponse = await fetch(
-			"https://gis.myfwc.com/mapping/rest/services/Open_Data/Recent_Harmful_Algal_Bloom__HAB__Events_2024_present/MapServer/7/query?where=1%3D1&outFields=*&returnGeometry=false&f=json"
-		);
-
-		const redTideData = await redTideResponse.json();
-
-		const redTideSamples = (redTideData.features || []).map(sample => {
-			const info = sample.attributes;
-
-			const sampleDate = info.SAMPLE_DATE;
-			const location = info.LOCATION;
-			const latitude = info.LATITUDE;
-			const longitude = info.LONGITUDE;
-			const species = info.NAME;
-			const cellCount = info.COUNT_;
-
-			return {
-				sampleDate,
-				location,
-				latitude,
-				longitude,
-				species,
-				cellCount
-			};
-			const readableDateRedTide = new Date(sample.sampleDate).toLocaleDateString("en-US", {
-				month: "long",
-				day: "numeric",
-				year: "numeric"
-			});
-			const locationRedTide = sample.location.split(";")[0];
-			const cellCountRedTide = sample.cellCount;
-		});
-
-		if (redTideSamples.every(sample => sample.cellCount === 0)) {
-			console.log("There is no current red tide.");
-			const redTideCurrentLocations = "No current red tide";
-		} else {
-			const redTideCurrentLocations = redTideSamples
-				.filter(sample => sample.cellCount > 0)
-				.map(sample => `${sample.location.split(";")[0]}: ${sample.cellCount} cells`);
-
-			console.log(redTideCurrentLocations);
-		}
-
-		
-
-		// HURRICANES
-			const hurricaneResponse = await fetch(
-				"https://florida-crisis-advisory.onrender.com/hurricanes"
-			);
-
-			if (!hurricaneResponse.ok) {
-				throw new Error("Could not get hurricane data" + hurricaneResponse.status);
-			}
-
-			const hurricaneData = await hurricaneResponse.json();
-
-			const hurricanes = (hurricaneData.activeStorms || []).map(storm => {
-
-				const name = storm.name;
-				const stormType = storm.classification;
-				const windSpeed = storm.intensity;
-				const pressure = storm.pressure;
-				const latitude = storm.latitude;
-				const longitude = storm.longitude;
-				const movement = storm.movement;
-				const lastUpdated = storm.lastUpdate;
-
-				return {
-					name,
-					stormType,
-					windSpeed,
-					pressure,
-					latitude,
-					longitude,
-					movement,
-					lastUpdated
-				};
-			});
-
-			if (hurricanes.length === 0) {
-				console.log("No active storms are currently listed by the NHC.");
-				const hurricaneStatus = "No active storms are currently listed by the NHC.";
-			} else {
-				console.log("Hurricanes:", hurricanes);
-			}
-
-
-		// FLOOD WARNINGS
-		const floodResponse = await fetch(
-			"https://api.weather.gov/alerts/active?area=FL",
-			{
-				headers: {
-					"Accept": "application/geo+json",
-					"User-Agent": "FloridaWeatherTracker/1.0"
-				}
-			}
-		);
-
-		const floodData = await floodResponse.json();
-
-		const floodWarnings = (floodData.features || [])
-			.filter(alert =>
-				alert.properties?.event?.toLowerCase().includes("flood")
-			)
-			.map(alert => {
-				const info = alert.properties;
-
-				const event = info.event;
-				const severity = info.severity;
-				const certainty = info.certainty;
-				const urgency = info.urgency;
-				const startTime = info.onset || info.effective;
-				const endTime = info.ends || info.expires;
-				const readableStartTime = startTime
-					? new Date(startTime).toLocaleString("en-US")
-					: "Unknown";
-
-				const readableEndTime = endTime
-					? new Date(endTime).toLocaleString("en-US")
-					: "Unknown";
-				const affectedAreas = info.areaDesc;
-				const headline = info.headline;
-				const description = info.description;
-				const instructions = info.instruction;
-
-				return {
-					event,
-					severity,
-					certainty,
-					urgency,
-					startTime,
-					endTime,
-					readableStartTime,
-					readableEndTime,
-					affectedAreas,
-					headline,
-					description,
-					instructions
-				};
-			});
-
-
-		// DISPLAY WHAT IS IN THE VARIABLES IN CONSOLE
-		console.log("RED TIDE:", redTideSamples);
-		console.log("HURRICANES:", hurricanes);
-		console.log("FLOOD WARNINGS:", floodWarnings);
-	}
-
-
-	getFloridaData().catch(error => {
-		console.error("Error getting Florida data:", error);
-	});
-
-	/* VERY IMPORTANT FOR D'ANGELO/BROOKS/DARIO: USE THE FOLLOWING VARIALBES TO DISPLAY THE DATA IN THE HTML
-	*   (Look in the console to see what each variable actually contains)
-	*   (some of the variables you might have to change into readable formats, specifically the description and instructions for flood warnings)
-	*   (also some might not be useful)
-	*	(some of the things that I got from the API might not be useful so I didn't make them into variables, but you can do that if you want to)
-	*   --FOR RED TIDE:
-	*   redTideCurrentLocations
-	*   readableDateRedTide (this is when the data of the red tide was last updated/collected)
-	*   locationRedTide (you won't really need this one, just use redTideCurrentLocations because this will have 2000+ locations)
-	*   cellCountRedTide
-	*   --FOR HURRICANES:
-	*   hurricaneStatus
-	*   stormType
-	*   windSpeed
-	*   pressure
-	*   movement
-	*   lastUpdated
-	*   --FOR FLOOD WARNINGS:
-	*   severity
-	*   certainty
-	*   urgency
-	*   readableStartTime
-	*   readableEndTime
-	*   affectedAreas
-	*   headline
-	*   description
-	*   instructions
-	*/
-</script>
+</html>
